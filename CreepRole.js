@@ -1,15 +1,15 @@
-class creepRole {
+class CreepRole {
     constructor(creep) {
         this.creep = creep;
     }
 
-    perfomRole() {
+    performRole() {
         this.run();
     }
 
     run() {
-        console.log('This is the base class run method');
+        throw new Error('The run method should be implemented by subclasses');
     }
-
 }
-module.exports = creepRole;
+
+module.exports = CreepRole;
