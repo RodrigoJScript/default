@@ -29,7 +29,7 @@ class CreepFactory {
     }
 
     static assignRoleToCreep(name, role) {
-        Memory.creeps[name] = { role: role };
+        Memory.creeps[name] = { role: role, working: false };
     }
 }
 
