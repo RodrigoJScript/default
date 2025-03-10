@@ -6,12 +6,14 @@ class RoleHarvester extends CreepRole {
     }
 
     run() {
-        if (this.creep.store.getFreeCapacity() > 0) {
-            const source = this.creep.pos.findClosestByPath(FIND_SOURCES);
-            if (source && this.creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                this.creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
-            }
-        } else {
+        if (this.creep.memory.working && this.creep.store[RESOURCE_ENERGY] == 0) {
+            this.creep.memory.working = false;
+        }
+        if (!this.creep.memory.working && this.creep.store.getFreeCapacity() == 0) {
+            this.creep.memory.working = true;
+        }
+
+        if (this.creep.memory.working) {
             const target = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_SPAWN ||
@@ -22,6 +24,11 @@ class RoleHarvester extends CreepRole {
             });
             if (target && this.creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 this.creep.moveTo(target, { visualizePathStyle: { stroke: '#ffffff' } });
+            }
+        } else {
+            const source = this.creep.pos.findClosestByPath(FIND_SOURCES);
+            if (source && this.creep.harvest(source) == ERR_NOT_IN_RANGE) {
+                this.creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
             }
         }
     }
