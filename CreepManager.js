@@ -3,6 +3,10 @@ const RoleHarvester = require('./RoleHarvester');
 const RoleBuilder = require('./RoleBuilder');
 const RoleUpgrader = require('./RoleUpgrader');
 
+const ROLE_HARVESTER = 'harvester';
+const ROLE_BUILDER = 'builder';
+const ROLE_UPGRADER = 'upgrader';
+
 class CreepManager {
     static run() {
         MemoryManager.cleanCreepMemory();
@@ -10,32 +14,25 @@ class CreepManager {
     }
 
     static manageCreeps() {
+        const roleClasses = {
+            [ROLE_HARVESTER]: RoleHarvester,
+            [ROLE_BUILDER]: RoleBuilder,
+            [ROLE_UPGRADER]: RoleUpgrader
+        };
+
         for (let name in Game.creeps) {
             const creep = Game.creeps[name];
             const role = creep.memory.role;
+            const RoleClass = roleClasses[role];
 
-            switch (role) {
-                case 'harvester':
-                    new RoleHarvester(creep).run();
-                    break;
-                case 'builder':
-                    new RoleBuilder(creep).run();
-                    break;
-                case 'upgrader':
-                    new RoleUpgrader(creep).run();
-                    break;
+            if (RoleClass) {
+                new RoleClass(creep).run();
             }
         }
     }
 
     static getCreepCountByRole(role) {
-        let count = 0;
-        for (let name in Game.creeps) {
-            if (Game.creeps[name].memory.role == role) {
-                count++;
-            }
-        }
-        return count;
+        return _.sum(Game.creeps, (creep) => creep.memory.role == role);
     }
 }
 
