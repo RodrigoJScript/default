@@ -1,5 +1,4 @@
 const MemoryManager = require('./MemoryManager');
-const CreepFactory = require('./CreepFactory');
 const RoleHarvester = require('./RoleHarvester');
 const RoleBuilder = require('./RoleBuilder');
 const RoleUpgrader = require('./RoleUpgrader');
@@ -7,10 +6,7 @@ const RoleUpgrader = require('./RoleUpgrader');
 class CreepManager {
     static run() {
         MemoryManager.cleanCreepMemory();
-
         this.manageCreeps();
-
-        this.spawnCreepsIfNeeded();
     }
 
     static manageCreeps() {
@@ -29,24 +25,6 @@ class CreepManager {
                     new RoleUpgrader(creep).run();
                     break;
             }
-        }
-    }
-
-    static spawnCreepsIfNeeded() {
-        const desiredHarvesters = 2;
-        const desiredBuilders = 4;
-        const desiredUpgraders = 2;
-
-        const currentHarvesters = this.getCreepCountByRole('harvester');
-        const currentBuilders = this.getCreepCountByRole('builder');
-        const currentUpgraders = this.getCreepCountByRole('upgrader');
-
-        if (currentHarvesters < desiredHarvesters) {
-            CreepFactory.createCreep('harvester', Game.spawns['Spawn1']);
-        } else if (currentBuilders < desiredBuilders) {
-            CreepFactory.createCreep('builder', Game.spawns['Spawn1']);
-        } else if (currentUpgraders < desiredUpgraders) {
-            CreepFactory.createCreep('upgrader', Game.spawns['Spawn1']);
         }
     }
 
