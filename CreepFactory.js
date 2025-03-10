@@ -1,3 +1,11 @@
+const ROLE_HARVESTER = 'harvester';
+const ROLE_BUILDER = 'builder';
+const ROLE_UPGRADER = 'upgrader';
+
+const BODY_HARVESTER = [WORK, CARRY, MOVE];
+const BODY_BUILDER = [WORK, CARRY, MOVE];
+const BODY_UPGRADER = [WORK, CARRY, MOVE];
+
 class CreepFactory {
     static createCreep(role, spawn) {
         const body = this.getBodyForRole(role);
@@ -12,16 +20,13 @@ class CreepFactory {
     }
 
     static getBodyForRole(role) {
-        switch (role) {
-            case 'harvester':
-                return [WORK, CARRY, MOVE];
-            case 'builder':
-                return [WORK, CARRY, MOVE];
-            case 'upgrader':
-                return [WORK, CARRY, MOVE];
-            default:
-                return [WORK, CARRY, MOVE];
-        }
+        const bodyParts = {
+            [ROLE_HARVESTER]: BODY_HARVESTER,
+            [ROLE_BUILDER]: BODY_BUILDER,
+            [ROLE_UPGRADER]: BODY_UPGRADER
+        };
+
+        return bodyParts[role] || BODY_HARVESTER;
     }
 
     static generateUniqueName(role) {
