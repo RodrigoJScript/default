@@ -1,35 +1,39 @@
 const CreepFactory = require('./CreepFactory');
 const CreepManager = require('./CreepManager');
 
+const ROLE_HARVESTER = 'harvester';
+const ROLE_BUILDER = 'builder';
+const ROLE_UPGRADER = 'upgrader';
+
+const DESIRED_HARVESTERS = 2;
+const DESIRED_BUILDERS = 4;
+const DESIRED_UPGRADERS = 2;
+
 class SpawnManager {
     static run() {
         this.spawnCreepsIfNeeded();
     }
 
     static spawnCreepsIfNeeded() {
-        const desiredHarvesters = 2;
-        const desiredBuilders = 4;
-        const desiredUpgraders = 2;
-
-        const currentHarvesters = CreepManager.getCreepCountByRole('harvester');
-        const currentBuilders = CreepManager.getCreepCountByRole('builder');
-        const currentUpgraders = CreepManager.getCreepCountByRole('upgrader');
+        const currentHarvesters = CreepManager.getCreepCountByRole(ROLE_HARVESTER);
+        const currentBuilders = CreepManager.getCreepCountByRole(ROLE_BUILDER);
+        const currentUpgraders = CreepManager.getCreepCountByRole(ROLE_UPGRADER);
 
         const spawn = this.getAvailableSpawn();
 
         if (spawn) {
-            if (currentHarvesters < desiredHarvesters) {
-                CreepFactory.createCreep('harvester', spawn);
-            } else if (currentBuilders < desiredBuilders) {
-                CreepFactory.createCreep('builder', spawn);
-            } else if (currentUpgraders < desiredUpgraders) {
-                CreepFactory.createCreep('upgrader', spawn);
+            if (currentHarvesters < DESIRED_HARVESTERS) {
+                CreepFactory.createCreep(ROLE_HARVESTER, spawn);
+            } else if (currentBuilders < DESIRED_BUILDERS) {
+                CreepFactory.createCreep(ROLE_BUILDER, spawn);
+            } else if (currentUpgraders < DESIRED_UPGRADERS) {
+                CreepFactory.createCreep(ROLE_UPGRADER, spawn);
             }
         }
     }
 
     static getAvailableSpawn() {
-        for (let name in Game.spawns) {
+        for (const name in Game.spawns) {
             const spawn = Game.spawns[name];
             if (!spawn.spawning) {
                 return spawn;
