@@ -7,7 +7,7 @@ const ROLE_UPGRADER = 'upgrader';
 
 const DESIRED_HARVESTERS = 2;
 const DESIRED_BUILDERS = 2;
-const DESIRED_UPGRADERS = 1;
+const DESIRED_UPGRADERS = 2;
 
 class SpawnManager {
     static run() {
