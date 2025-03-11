@@ -19,12 +19,12 @@ class RoleBuilder extends CreepRole {
         if (this.creep.memory.working) {
             const target = this.creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
             if (target && this.creep.build(target) == ERR_NOT_IN_RANGE) {
-                this.creep.moveTo(target, { visualizePathStyle: PATH_STYLE_BUILD });
+                this.enhancedMoveTo(target, { visualizePathStyle: PATH_STYLE_BUILD });
             }
         } else {
             const source = this.creep.pos.findClosestByPath(FIND_SOURCES);
             if (source && this.creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                this.creep.moveTo(source, { visualizePathStyle: PATH_STYLE_HARVEST });
+                this.enhancedMoveTo(source, { visualizePathStyle: PATH_STYLE_HARVEST });
             }
         }
     }

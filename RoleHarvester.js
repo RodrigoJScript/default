@@ -26,12 +26,12 @@ class RoleHarvester extends CreepRole {
                 }
             });
             if (target && this.creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                this.creep.moveTo(target, { visualizePathStyle: PATH_STYLE_TRANSFER });
+                this.enhancedMoveTo(target, { visualizePathStyle: PATH_STYLE_TRANSFER });
             }
         } else {
             const source = this.creep.pos.findClosestByPath(FIND_SOURCES);
             if (source && this.creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                this.creep.moveTo(source, { visualizePathStyle: PATH_STYLE_HARVEST });
+                this.enhancedMoveTo(source, { visualizePathStyle: PATH_STYLE_HARVEST });
             }
         }
     }
