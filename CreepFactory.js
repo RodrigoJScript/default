@@ -25,38 +25,30 @@ class CreepFactory {
 
         let remainingEnergy = energyAvailable;
 
-        const minimumRequiredEnergy = bodyCosts['work'] + bodyCosts['carry'] + bodyCosts['move'];
+        // Ensure there is enough energy for at least one work, two carry, and two move parts
+        const minimumRequiredEnergy = bodyCosts['work'] + 2 * bodyCosts['carry'] + 2 * bodyCosts['move'];
         if (remainingEnergy < minimumRequiredEnergy) {
-            return [];
+            return []; // Not enough energy to spawn a creep with the minimum required parts
         }
 
+        // Add two carry parts first
         bodyParts.push(CARRY);
-        remainingEnergy -= bodyCosts['carry'];
+        bodyParts.push(CARRY);
+        remainingEnergy -= 2 * bodyCosts['carry'];
 
+        // Add two move parts
         bodyParts.push(MOVE);
-        remainingEnergy -= bodyCosts['move'];
+        bodyParts.push(MOVE);
+        remainingEnergy -= 2 * bodyCosts['move'];
 
+        // Add one work part
         bodyParts.push(WORK);
         remainingEnergy -= bodyCosts['work'];
 
-        const maxParts = Math.floor(remainingEnergy / 50);
-        const moveParts = Math.ceil(maxParts / 5);
-
-        for (let i = 0; i < moveParts && remainingEnergy >= bodyCosts['move']; i++) {
-            bodyParts.push(MOVE);
-            remainingEnergy -= bodyCosts['move'];
-        }
-
+        // Add work parts with the remaining energy
         while (remainingEnergy >= bodyCosts['work']) {
             bodyParts.push(WORK);
             remainingEnergy -= bodyCosts['work'];
-        }
-
-        const totalParts = bodyParts.length;
-        const requiredMoveParts = Math.ceil(totalParts / 5);
-        while (bodyParts.filter(part => part === MOVE).length < requiredMoveParts && remainingEnergy >= bodyCosts['move']) {
-            bodyParts.push(MOVE);
-            remainingEnergy -= bodyCosts['move'];
         }
 
         return bodyParts;
