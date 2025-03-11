@@ -2,6 +2,7 @@ const CreepRole = require("./CreepRole");
 
 const PATH_STYLE_BUILD = { stroke: '#ffffff' };
 const PATH_STYLE_HARVEST = { stroke: '#ffaa00' };
+const PATH_STYLE_UPGRADE = { stroke: '#00ff00' };
 
 class RoleBuilder extends CreepRole {
     constructor(creep) {
@@ -18,8 +19,14 @@ class RoleBuilder extends CreepRole {
 
         if (this.creep.memory.working) {
             const target = this.creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-            if (target && this.creep.build(target) == ERR_NOT_IN_RANGE) {
-                this.enhancedMoveTo(target, { visualizePathStyle: PATH_STYLE_BUILD });
+            if (target) {
+                if (this.creep.build(target) == ERR_NOT_IN_RANGE) {
+                    this.enhancedMoveTo(target, { visualizePathStyle: PATH_STYLE_BUILD });
+                }
+            } else {
+                if (this.creep.upgradeController(this.creep.room.controller) == ERR_NOT_IN_RANGE) {
+                    this.enhancedMoveTo(this.creep.room.controller, { visualizePathStyle: PATH_STYLE_UPGRADE });
+                }
             }
         } else {
             const source = this.creep.pos.findClosestByPath(FIND_SOURCES);
