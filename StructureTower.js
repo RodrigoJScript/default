@@ -10,15 +10,5 @@ module.exports = {
             tower.attack(closestHostile);
             return;
         }
-
-        // Repair the most damaged structure
-        const damagedStructures = tower.room.find(FIND_STRUCTURES, {
-            filter: (structure) => structure.hits < structure.hitsMax
-        });
-
-        if (damagedStructures.length > 0) {
-            damagedStructures.sort((a, b) => a.hits - b.hits);
-            tower.repair(damagedStructures[0]);
-        }
     }
 };
