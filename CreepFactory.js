@@ -9,7 +9,7 @@ class CreepFactory {
         const result = spawn.spawnCreep(body, name);
 
         if (result == OK) {
-            this.assignRoleToCreep(name, role);
+            this.assignRoleToCreep(name, role, spawn.room);
         }
 
         return result;
@@ -66,8 +66,22 @@ class CreepFactory {
         return `${role}_${Game.time}`;
     }
 
-    static assignRoleToCreep(name, role) {
-        Memory.creeps[name] = { role: role, working: false };
+    static assignRoleToCreep(name, role, room) {
+        const creepMemory = { role: role, working: false };
+
+        if (role === ROLE_HARVESTER) {
+            const sources = room.find(FIND_SOURCES);
+            const assignedSources = _.map(_.filter(Game.creeps, (creep) => creep.memory.role === ROLE_HARVESTER), (creep) => creep.memory.sourceId);
+            const availableSources = _.filter(sources, (source) => !_.includes(assignedSources, source.id));
+
+            if (availableSources.length > 0) {
+                creepMemory.sourceId = availableSources[0].id;
+            } else {
+                creepMemory.sourceId = sources[0].id; // Fallback to the first source if all are assigned
+            }
+        }
+
+        Memory.creeps[name] = creepMemory;
     }
 }
 

@@ -29,7 +29,7 @@ class RoleHarvester extends CreepRole {
                 this.enhancedMoveTo(target, { visualizePathStyle: PATH_STYLE_TRANSFER });
             }
         } else {
-            const source = this.creep.pos.findClosestByPath(FIND_SOURCES);
+            const source = Game.getObjectById(this.creep.memory.sourceId);
             if (source && this.creep.harvest(source) == ERR_NOT_IN_RANGE) {
                 this.enhancedMoveTo(source, { visualizePathStyle: PATH_STYLE_HARVEST });
             }
