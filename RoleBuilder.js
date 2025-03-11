@@ -20,8 +20,13 @@ class RoleBuilder extends CreepRole {
                     this.enhancedMoveTo(target);
                 }
             } else {
-                if (this.creep.upgradeController(this.creep.room.controller) == ERR_NOT_IN_RANGE) {
-                    this.enhancedMoveTo(this.creep.room.controller);
+                const damagedStructure = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                    filter: (structure) => structure.hits < structure.hitsMax
+                });
+                if (damagedStructure) {
+                    if (this.creep.repair(damagedStructure) == ERR_NOT_IN_RANGE) {
+                        this.enhancedMoveTo(damagedStructure);
+                    }
                 }
             }
         } else {
