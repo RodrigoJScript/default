@@ -25,28 +25,38 @@ class CreepFactory {
 
         let remainingEnergy = energyAvailable;
 
-        if (remainingEnergy >= bodyCosts['carry']) {
-            bodyParts.push(CARRY);
-            remainingEnergy -= bodyCosts['carry'];
+        const minimumRequiredEnergy = bodyCosts['work'] + bodyCosts['carry'] + bodyCosts['move'];
+        if (remainingEnergy < minimumRequiredEnergy) {
+            return [];
         }
 
-        const maxParts = Math.floor(energyAvailable / 50);
-        const moveParts = Math.ceil(maxParts / 2);
+        bodyParts.push(CARRY);
+        remainingEnergy -= bodyCosts['carry'];
+
+        bodyParts.push(MOVE);
+        remainingEnergy -= bodyCosts['move'];
+
+        bodyParts.push(WORK);
+        remainingEnergy -= bodyCosts['work'];
+
+        const maxParts = Math.floor(remainingEnergy / 50);
+        const moveParts = Math.ceil(maxParts / 5);
 
         for (let i = 0; i < moveParts && remainingEnergy >= bodyCosts['move']; i++) {
             bodyParts.push(MOVE);
             remainingEnergy -= bodyCosts['move'];
         }
 
-        while (remainingEnergy >= 50) {
-            if (remainingEnergy >= bodyCosts['work']) {
-                bodyParts.push(WORK);
-                remainingEnergy -= bodyCosts['work'];
-            }
-            if (remainingEnergy >= bodyCosts['move']) {
-                bodyParts.push(MOVE);
-                remainingEnergy -= bodyCosts['move'];
-            }
+        while (remainingEnergy >= bodyCosts['work']) {
+            bodyParts.push(WORK);
+            remainingEnergy -= bodyCosts['work'];
+        }
+
+        const totalParts = bodyParts.length;
+        const requiredMoveParts = Math.ceil(totalParts / 5);
+        while (bodyParts.filter(part => part === MOVE).length < requiredMoveParts && remainingEnergy >= bodyCosts['move']) {
+            bodyParts.push(MOVE);
+            remainingEnergy -= bodyCosts['move'];
         }
 
         return bodyParts;
