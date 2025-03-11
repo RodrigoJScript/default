@@ -2,13 +2,9 @@ const ROLE_HARVESTER = 'harvester';
 const ROLE_BUILDER = 'builder';
 const ROLE_UPGRADER = 'upgrader';
 
-const BODY_HARVESTER = [WORK, CARRY, MOVE];
-const BODY_BUILDER = [WORK, CARRY, MOVE];
-const BODY_UPGRADER = [WORK, CARRY, MOVE];
-
 class CreepFactory {
     static createCreep(role, spawn) {
-        const body = this.getBodyForRole(role);
+        const body = this.getBodyForRole(role, spawn.room.energyAvailable);
         const name = this.generateUniqueName(role);
         const result = spawn.spawnCreep(body, name);
 
@@ -19,14 +15,41 @@ class CreepFactory {
         return result;
     }
 
-    static getBodyForRole(role) {
-        const bodyParts = {
-            [ROLE_HARVESTER]: BODY_HARVESTER,
-            [ROLE_BUILDER]: BODY_BUILDER,
-            [ROLE_UPGRADER]: BODY_UPGRADER
+    static getBodyForRole(role, energyAvailable) {
+        const bodyParts = [];
+        const bodyCosts = {
+            'work': 100,
+            'carry': 50,
+            'move': 50
         };
 
-        return bodyParts[role] || BODY_HARVESTER;
+        let remainingEnergy = energyAvailable;
+
+        if (remainingEnergy >= bodyCosts['carry']) {
+            bodyParts.push(CARRY);
+            remainingEnergy -= bodyCosts['carry'];
+        }
+
+        const maxParts = Math.floor(energyAvailable / 50);
+        const moveParts = Math.ceil(maxParts / 2);
+
+        for (let i = 0; i < moveParts && remainingEnergy >= bodyCosts['move']; i++) {
+            bodyParts.push(MOVE);
+            remainingEnergy -= bodyCosts['move'];
+        }
+
+        while (remainingEnergy >= 50) {
+            if (remainingEnergy >= bodyCosts['work']) {
+                bodyParts.push(WORK);
+                remainingEnergy -= bodyCosts['work'];
+            }
+            if (remainingEnergy >= bodyCosts['move']) {
+                bodyParts.push(MOVE);
+                remainingEnergy -= bodyCosts['move'];
+            }
+        }
+
+        return bodyParts;
     }
 
     static generateUniqueName(role) {
