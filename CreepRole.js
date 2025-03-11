@@ -11,7 +11,7 @@ class CreepRole {
         throw new Error('The run method should be implemented by subclasses');
     }
 
-    enhancedMoveTo(target, options = {}) {
+    enhancedMoveTo(target) {
         if (!this.creep.memory._move || this.creep.memory._move.dest !== target.id) {
             const path = PathFinder.search(this.creep.pos, { pos: target.pos, range: 1 }, {
                 plainCost: 2,

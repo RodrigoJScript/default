@@ -1,8 +1,5 @@
 const CreepRole = require("./CreepRole");
 
-const PATH_STYLE_TRANSFER = { stroke: '#ffffff' };
-const PATH_STYLE_HARVEST = { stroke: '#ffaa00' };
-
 class RoleHarvester extends CreepRole {
     constructor(creep) {
         super(creep);
@@ -26,12 +23,12 @@ class RoleHarvester extends CreepRole {
                 }
             });
             if (target && this.creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                this.enhancedMoveTo(target, { visualizePathStyle: PATH_STYLE_TRANSFER });
+                this.enhancedMoveTo(target);
             }
         } else {
             const source = Game.getObjectById(this.creep.memory.sourceId);
             if (source && this.creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                this.enhancedMoveTo(source, { visualizePathStyle: PATH_STYLE_HARVEST });
+                this.enhancedMoveTo(source);
             }
         }
     }
