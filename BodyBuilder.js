@@ -32,6 +32,26 @@ class BodyBuilder {
             return bodyParts;
         }
 
+        if (role === 'scavenger') {
+            // Ensure there is enough energy for 4 move parts and 2 carry parts
+            const minimumRequiredEnergy = 4 * bodyCosts['move'] + 2 * bodyCosts['carry'];
+            if (remainingEnergy < minimumRequiredEnergy) {
+                return []; // Not enough energy to spawn a scavenger with the required parts
+            }
+
+            // Add 4 move parts
+            for (let i = 0; i < 4; i++) {
+                bodyParts.push(MOVE);
+            }
+
+            // Add 2 carry parts
+            for (let i = 0; i < 2; i++) {
+                bodyParts.push(CARRY);
+            }
+
+            return bodyParts;
+        }
+
         // Ensure there is enough energy for at least one work, two carry, and two move parts
         const minimumRequiredEnergy = bodyCosts['work'] + 2 * bodyCosts['carry'] + 2 * bodyCosts['move'];
         if (remainingEnergy < minimumRequiredEnergy) {
