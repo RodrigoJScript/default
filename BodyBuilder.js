@@ -16,11 +16,17 @@ class BodyBuilder {
                 return []; // Not enough energy to spawn a hauler with the minimum required parts
             }
 
-            // Add carry and move parts in equal amounts
-            while (remainingEnergy >= bodyCosts['carry'] + bodyCosts['move']) {
+            // Calculate the number of parts
+            const totalParts = Math.floor(remainingEnergy / (bodyCosts['carry'] * 0.75 + bodyCosts['move'] * 0.25));
+            const moveParts = Math.floor(totalParts * 0.25);
+            const carryParts = totalParts - moveParts;
+
+            // Add carry and move parts
+            for (let i = 0; i < carryParts; i++) {
                 bodyParts.push(CARRY);
+            }
+            for (let i = 0; i < moveParts; i++) {
                 bodyParts.push(MOVE);
-                remainingEnergy -= bodyCosts['carry'] + bodyCosts['move'];
             }
 
             return bodyParts;

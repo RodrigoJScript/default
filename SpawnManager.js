@@ -8,7 +8,7 @@ const ROLE_HAULER = 'hauler';
 
 const DESIRED_HARVESTERS = 2;
 const DESIRED_BUILDERS = 0;
-const DESIRED_UPGRADERS = 0;
+const DESIRED_UPGRADERS = 1;
 const DESIRED_HAULERS = 2;
 
 class SpawnManager {
@@ -34,7 +34,7 @@ class SpawnManager {
             } else if (currentUpgraders < DESIRED_UPGRADERS) {
                 console.log(`Spawning upgrader. Current: ${currentUpgraders}, Desired: ${DESIRED_UPGRADERS}`);
                 CreepFactory.createCreep(ROLE_UPGRADER, spawn);
-            } else if (currentHaulers < DESIRED_HAULERS) { // Añade la lógica para crear haulers
+            } else if (currentHaulers < DESIRED_HAULERS) {
                 console.log(`Spawning hauler. Current: ${currentHaulers}, Desired: ${DESIRED_HAULERS}`);
                 CreepFactory.createCreep(ROLE_HAULER, spawn);
             }
