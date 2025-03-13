@@ -15,30 +15,14 @@ class RoleScavenger extends CreepRole {
         }
 
         if (this.creep.memory.working) {
-            // Find the closest tombstone with energy
+            // Find the closest tombstone with resources
             let target = this.creep.pos.findClosestByPath(FIND_TOMBSTONES, {
-                filter: (tombstone) => tombstone.store[RESOURCE_ENERGY] > 0
+                filter: (tombstone) => tombstone.store.getUsedCapacity() > 0
             });
 
-            // If no tombstones with energy, find the closest dropped energy
+            // If no tombstones with resources, find the closest dropped resource
             if (!target) {
-                target = this.creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-                    filter: (resource) => resource.resourceType == RESOURCE_ENERGY
-                });
-            }
-
-            // If no energy found, find other resources if storage is available
-            if (!target) {
-                const storage = this.creep.room.storage;
-                if (storage && storage.store.getFreeCapacity() > 0) {
-                    target = this.creep.pos.findClosestByPath(FIND_TOMBSTONES, {
-                        filter: (tombstone) => tombstone.store.getUsedCapacity() > 0
-                    });
-
-                    if (!target) {
-                        target = this.creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
-                    }
-                }
+                target = this.creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
             }
 
             if (target) {
@@ -73,15 +57,8 @@ class RoleScavenger extends CreepRole {
 
             if (target) {
                 for (const resourceType in this.creep.store) {
-                    if (resourceType === RESOURCE_ENERGY) {
-                        if (this.creep.transfer(target, resourceType) == ERR_NOT_IN_RANGE) {
-                            this.enhancedMoveTo(target);
-                        }
-                    } else {
-                        const storage = this.creep.room.storage;
-                        if (storage && this.creep.transfer(storage, resourceType) == ERR_NOT_IN_RANGE) {
-                            this.enhancedMoveTo(storage);
-                        }
+                    if (this.creep.transfer(target, resourceType) == ERR_NOT_IN_RANGE) {
+                        this.enhancedMoveTo(target);
                     }
                 }
             }
