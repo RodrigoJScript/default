@@ -1,14 +1,22 @@
-module.exports = {
-    run: function (tower) {
+class StructureTower {
+    static run(tower) {
         if (!tower) {
             return;
         }
 
-        // Prioritize attacking hostile creeps
         const closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if (closestHostile) {
             tower.attack(closestHostile);
             return;
         }
     }
-};
+
+    static runAll() {
+        const towers = _.filter(Game.structures, (structure) => structure.structureType === STRUCTURE_TOWER);
+        for (const tower of towers) {
+            this.run(tower);
+        }
+    }
+}
+
+module.exports = StructureTower;
