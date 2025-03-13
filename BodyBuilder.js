@@ -17,7 +17,7 @@ class BodyBuilder {
             }
 
             // Calculate the number of parts
-            const totalParts = Math.floor(remainingEnergy / (bodyCosts['carry'] * 0.75 + bodyCosts['move'] * 0.25));
+            const totalParts = Math.min(20, Math.floor(remainingEnergy / (bodyCosts['carry'] * 0.75 + bodyCosts['move'] * 0.25)));
             const moveParts = Math.floor(totalParts * 0.25);
             const carryParts = totalParts - moveParts;
 
@@ -65,10 +65,12 @@ class BodyBuilder {
         // Add one work part
         remainingEnergy = this.addBodyParts(bodyParts, WORK, 1, bodyCosts['work'], remainingEnergy);
 
-        // Add work parts with the remaining energy
-        while (remainingEnergy >= bodyCosts['work']) {
+        // Add work parts with the remaining energy, up to a maximum of 5 work parts
+        let workPartsCount = 1; // Already added one work part
+        while (remainingEnergy >= bodyCosts['work'] && workPartsCount < 5) {
             bodyParts.push(WORK);
             remainingEnergy -= bodyCosts['work'];
+            workPartsCount++;
         }
 
         return bodyParts;

@@ -55,7 +55,7 @@ class RoleScavenger extends CreepRole {
                 }
             }
         } else {
-            // Find the closest structure that can store resources
+            // Find the closest structure that can store energy
             let target = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_SPAWN ||
@@ -73,8 +73,35 @@ class RoleScavenger extends CreepRole {
 
             if (target) {
                 for (const resourceType in this.creep.store) {
-                    if (this.creep.transfer(target, resourceType) == ERR_NOT_IN_RANGE) {
-                        this.enhancedMoveTo(target);
+                    if (resourceType === RESOURCE_ENERGY) {
+                        if (this.creep.transfer(target, resourceType) == ERR_NOT_IN_RANGE) {
+                            this.enhancedMoveTo(target);
+                        }
+                    } else {
+                        const storage = this.creep.room.storage;
+                        if (storage && this.creep.transfer(storage, resourceType) == ERR_NOT_IN_RANGE) {
+                            this.enhancedMoveTo(storage);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Check containers for non-energy resources and transfer them to storage
+        const containers = this.creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => structure.structureType == STRUCTURE_CONTAINER
+        });
+
+        for (const container of containers) {
+            for (const resourceType in container.store) {
+                if (resourceType !== RESOURCE_ENERGY) {
+                    if (this.creep.withdraw(container, resourceType) == ERR_NOT_IN_RANGE) {
+                        this.enhancedMoveTo(container);
+                    } else if (this.creep.store.getFreeCapacity() == 0) {
+                        const storage = this.creep.room.storage;
+                        if (storage && this.creep.transfer(storage, resourceType) == ERR_NOT_IN_RANGE) {
+                            this.enhancedMoveTo(storage);
+                        }
                     }
                 }
             }
