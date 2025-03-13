@@ -4,6 +4,8 @@ class RoleAssigner {
 
         if (role === 'harvester') {
             this.assignHarvesterSource(creepMemory, room);
+        } else if (role === 'hauler') {
+            this.assignHaulerContainer(creepMemory, room);
         }
 
         Memory.creeps[name] = creepMemory;
@@ -17,7 +19,21 @@ class RoleAssigner {
         if (availableSources.length > 0) {
             creepMemory.sourceId = availableSources[0].id;
         } else {
-            creepMemory.sourceId = sources[0].id; // Fallback to the first source if all are assigned
+            creepMemory.sourceId = sources[0].id;
+        }
+    }
+
+    static assignHaulerContainer(creepMemory, room) {
+        const containers = room.find(FIND_STRUCTURES, {
+            filter: (structure) => structure.structureType === STRUCTURE_CONTAINER
+        });
+        const assignedContainers = _.map(_.filter(Game.creeps, (creep) => creep.memory.role === 'hauler'), (creep) => creep.memory.containerId);
+        const availableContainers = _.filter(containers, (container) => !_.includes(assignedContainers, container.id));
+
+        if (availableContainers.length > 0) {
+            creepMemory.containerId = availableContainers[0].id;
+        } else {
+            creepMemory.containerId = containers[0].id;
         }
     }
 }

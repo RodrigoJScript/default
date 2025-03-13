@@ -1,6 +1,6 @@
 const CreepRole = require("./CreepRole");
 
-class RoleHarvester extends CreepRole {
+class RoleHauler extends CreepRole {
     constructor(creep) {
         super(creep);
     }
@@ -16,7 +16,7 @@ class RoleHarvester extends CreepRole {
         if (this.creep.memory.working) {
             const target = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_SPAWN ||
+                    return (structure.structureType == STRUCTURE_SPAWN ||
                         structure.structureType == STRUCTURE_EXTENSION ||
                         structure.structureType == STRUCTURE_TOWER) &&
                         structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
@@ -26,12 +26,13 @@ class RoleHarvester extends CreepRole {
                 this.enhancedMoveTo(target);
             }
         } else {
-            const source = Game.getObjectById(this.creep.memory.sourceId);
-            if (source && this.creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                this.enhancedMoveTo(source);
+            const container = Game.getObjectById(this.creep.memory.containerId);
+
+            if (container && this.creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                this.enhancedMoveTo(container);
             }
         }
     }
 }
 
-module.exports = RoleHarvester;
+module.exports = RoleHauler;
