@@ -30,8 +30,18 @@ class RoleBuilder extends CreepRole {
                 }
             }
         } else {
-            const source = this.creep.pos.findClosestByPath(FIND_SOURCES);
-            if (source && this.creep.harvest(source) == ERR_NOT_IN_RANGE) {
+            let source = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType == STRUCTURE_CONTAINER &&
+                        structure.store[RESOURCE_ENERGY] > 0;
+                }
+            });
+
+            if (!source) {
+                source = this.creep.pos.findClosestByPath(FIND_SOURCES);
+            }
+
+            if (source && (this.creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE || this.creep.harvest(source) == ERR_NOT_IN_RANGE)) {
                 this.enhancedMoveTo(source);
             }
         }
