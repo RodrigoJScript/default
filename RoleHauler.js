@@ -14,7 +14,8 @@ class RoleHauler extends CreepRole {
         }
 
         if (this.creep.memory.working) {
-            const target = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            // Find the closest structure that needs energy
+            let target = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_SPAWN ||
                         structure.structureType == STRUCTURE_EXTENSION ||
@@ -22,6 +23,17 @@ class RoleHauler extends CreepRole {
                         structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
                 }
             });
+
+            // If no suitable structure found, check for storage
+            if (!target) {
+                target = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return structure.structureType == STRUCTURE_STORAGE &&
+                            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                    }
+                });
+            }
+
             if (target && this.creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 this.enhancedMoveTo(target);
             }
