@@ -14,17 +14,30 @@ class RoleUpgrader extends CreepRole {
         }
 
         if (this.creep.memory.working) {
+            // Move to and upgrade the controller
             if (this.creep.upgradeController(this.creep.room.controller) == ERR_NOT_IN_RANGE) {
                 this.enhancedMoveTo(this.creep.room.controller);
             }
         } else {
+            // Prioritize storage for energy extraction
             let source = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType == STRUCTURE_CONTAINER &&
+                    return structure.structureType == STRUCTURE_STORAGE &&
                         structure.store[RESOURCE_ENERGY] > 0;
                 }
             });
 
+            // If no energy in storage, find the closest container with energy
+            if (!source) {
+                source = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return structure.structureType == STRUCTURE_CONTAINER &&
+                            structure.store[RESOURCE_ENERGY] > 0;
+                    }
+                });
+            }
+
+            // If no containers have energy, find the closest energy source
             if (!source) {
                 source = this.creep.pos.findClosestByPath(FIND_SOURCES);
             }

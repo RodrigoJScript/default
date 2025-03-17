@@ -10,22 +10,16 @@ class BodyBuilder {
         let remainingEnergy = energyAvailable;
 
         if (role === 'hauler') {
-            // Ensure there is enough energy for at least one carry and one move part
             const minimumRequiredEnergy = bodyCosts['carry'] + bodyCosts['move'];
             if (remainingEnergy < minimumRequiredEnergy) {
-                return []; // Not enough energy to spawn a hauler with the minimum required parts
+                return [];
             }
 
-            // Calculate the number of parts
-            const totalParts = Math.min(20, Math.floor(remainingEnergy / (bodyCosts['carry'] * 0.75 + bodyCosts['move'] * 0.25)));
-            const moveParts = Math.floor(totalParts * 0.25);
-            const carryParts = totalParts - moveParts;
+            const pairCost = bodyCosts['carry'] + bodyCosts['move'];
+            const numberOfPairs = Math.min(10, Math.floor(remainingEnergy / pairCost));
 
-            // Add carry and move parts
-            for (let i = 0; i < carryParts; i++) {
+            for (let i = 0; i < numberOfPairs; i++) {
                 bodyParts.push(CARRY);
-            }
-            for (let i = 0; i < moveParts; i++) {
                 bodyParts.push(MOVE);
             }
 
@@ -67,7 +61,7 @@ class BodyBuilder {
 
         // Add work parts with the remaining energy, up to a maximum of 5 work parts
         let workPartsCount = 1; // Already added one work part
-        while (remainingEnergy >= bodyCosts['work'] && workPartsCount < 5) {
+        while (remainingEnergy >= bodyCosts['work'] && workPartsCount < 6) {
             bodyParts.push(WORK);
             remainingEnergy -= bodyCosts['work'];
             workPartsCount++;
