@@ -1,4 +1,4 @@
-class RoleAssigner {
+class AssignerRole {
     static assignRoleToCreep(name, role, room) {
         const creepMemory = { role: role, working: false };
 
@@ -38,4 +38,4 @@ class RoleAssigner {
     }
 }
 
-module.exports = RoleAssigner;
+module.exports = AssignerRole;

@@ -6,12 +6,14 @@ const ROLE_BUILDER = 'builder';
 const ROLE_UPGRADER = 'upgrader';
 const ROLE_HAULER = 'hauler';
 const ROLE_SCAVENGER = 'scavenger';
+const ROLE_WALL_FORTIFIER = 'wallFortifier';
 
 const DESIRED_HARVESTERS = 2;
 const DESIRED_BUILDERS = 2;
 const DESIRED_UPGRADERS = 2;
 const DESIRED_HAULERS = 2;
 const DESIRED_SCAVENGERS = 1;
+const DESIRED_WALL_FORTIFIERS = 1;
 
 class SpawnManager {
     static run() {
@@ -24,6 +26,7 @@ class SpawnManager {
         const currentUpgraders = CreepManager.getCreepCountByRole(ROLE_UPGRADER);
         const currentHaulers = CreepManager.getCreepCountByRole(ROLE_HAULER);
         const currentScavengers = CreepManager.getCreepCountByRole(ROLE_SCAVENGER);
+        const currentWallFortifiers = CreepManager.getCreepCountByRole(ROLE_WALL_FORTIFIER);
 
         const spawn = this.getAvailableSpawn();
 
@@ -43,6 +46,9 @@ class SpawnManager {
             } else if (currentScavengers < DESIRED_SCAVENGERS) {
                 console.log(`Spawning scavenger. Current: ${currentScavengers}, Desired: ${DESIRED_SCAVENGERS}`);
                 CreepFactory.createCreep(ROLE_SCAVENGER, spawn);
+            } else if (currentWallFortifiers < DESIRED_WALL_FORTIFIERS) {
+                console.log(`Spawning wallFOrtifier. Current: ${currentWallFortifiers}, Desired: ${DESIRED_WALL_FORTIFIERS}`);
+                CreepFactory.createCreep(ROLE_WALL_FORTIFIER, spawn);
             }
         }
     }
