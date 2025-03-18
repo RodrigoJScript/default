@@ -15,7 +15,7 @@ const DESIRED_BUILDERS = 1;
 const DESIRED_UPGRADERS = 1;
 const DESIRED_HAULERS = 1;
 const DESIRED_SCAVENGERS = 1;
-const DESIRED_WALL_FORTIFIERS = 1;
+const DESIRED_WALL_FORTIFIERS = 2;
 const DESIRED_MANAGERS = 1;
 const DESIRED_SUPPLIERS = 1;
 
@@ -72,7 +72,7 @@ class SpawnManager {
 
         const managers = _.filter(Game.creeps, (creep) => creep.memory.role === ROLE_MANAGER);
         for (const manager of managers) {
-            if (manager.ticksToLive < 1000 && spawn.renewCreep(manager) === ERR_NOT_IN_RANGE) {
+            if (manager.ticksToLive < 1200 && spawn.renewCreep(manager) === ERR_NOT_IN_RANGE) {
                 manager.moveTo(spawn);
             }
         }
