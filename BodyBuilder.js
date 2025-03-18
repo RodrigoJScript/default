@@ -26,6 +26,23 @@ class BodyBuilder {
             return bodyParts;
         }
 
+        if (role === 'courier') {
+            const minimumRequiredEnergy = bodyCosts['carry'] + bodyCosts['move'];
+            if (remainingEnergy < minimumRequiredEnergy) {
+                return [];
+            }
+
+            const pairCost = bodyCosts['carry'] + bodyCosts['move'];
+            const numberOfPairs = Math.min(25, Math.floor(remainingEnergy / pairCost));
+
+            for (let i = 0; i < numberOfPairs; i++) {
+                bodyParts.push(CARRY);
+                bodyParts.push(MOVE);
+            }
+
+            return bodyParts;
+        }
+
         if (role === 'scavenger') {
             const minimumRequiredEnergy = 4 * bodyCosts['move'] + 2 * bodyCosts['carry'];
             if (remainingEnergy < minimumRequiredEnergy) {
@@ -68,10 +85,15 @@ class BodyBuilder {
         remainingEnergy = this.addBodyParts(bodyParts, WORK, 1, bodyCosts['work'], remainingEnergy);
 
         let workPartsCount = 1;
-        while (remainingEnergy >= bodyCosts['work'] && workPartsCount < 6) {
+        while (remainingEnergy >= bodyCosts['work'] && workPartsCount < 5) {
             bodyParts.push(WORK);
             remainingEnergy -= bodyCosts['work'];
             workPartsCount++;
+        }
+
+        if (workPartsCount === 5 && remainingEnergy >= bodyCosts['move']) {
+            bodyParts.push(MOVE);
+            remainingEnergy -= bodyCosts['move'];
         }
 
         return bodyParts;

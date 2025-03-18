@@ -8,6 +8,8 @@ class AssignerRole {
             this.assignHaulerContainer(creepMemory, room);
         } else if (role === 'manager') {
             this.assignManagerLink(creepMemory, room);
+        } else if (role === 'courier') {
+            this.assignCourierContainer(creepMemory, room);
         }
 
         Memory.creeps[name] = creepMemory;
@@ -60,6 +62,21 @@ class AssignerRole {
 
         if (closestLink) {
             creepMemory.linkId = closestLink.id;
+        }
+    }
+
+    static assignCourierContainer(creepMemory, room) {
+        const containers = room.find(FIND_STRUCTURES, {
+            filter: (structure) => structure.structureType === STRUCTURE_CONTAINER
+        });
+
+        const assignedContainers = _.map(_.filter(Game.creeps, (creep) => creep.memory.role === 'courier'), (creep) => creep.memory.containerId);
+        const availableContainers = _.filter(containers, (container) => !_.includes(assignedContainers, container.id));
+
+        if (availableContainers.length > 0) {
+            creepMemory.containerId = availableContainers[0].id;
+        } else {
+            console.log("No hay contenedores disponibles para asignar al courier.");
         }
     }
 }
