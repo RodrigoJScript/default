@@ -21,7 +21,9 @@ class RoleBuilder extends CreepRole {
                 }
             } else {
                 const damagedStructure = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                    filter: (structure) => structure.hits < structure.hitsMax
+                    filter: (structure) => structure.hits < structure.hitsMax &&
+                        structure.structureType !== STRUCTURE_WALL &&
+                        structure.structureType !== STRUCTURE_RAMPART
                 });
                 if (damagedStructure) {
                     if (this.creep.repair(damagedStructure) == ERR_NOT_IN_RANGE) {
