@@ -22,6 +22,7 @@ const DESIRED_SUPPLIERS = 1;
 class SpawnManager {
     static run() {
         this.spawnCreepsIfNeeded();
+        this.renewCreeps();
     }
 
     static spawnCreepsIfNeeded() {
@@ -61,6 +62,18 @@ class SpawnManager {
             } else if (currentSuppliers < DESIRED_SUPPLIERS) {
                 console.log(`Spawning supplier. Current: ${currentSuppliers}, Desired: ${DESIRED_SUPPLIERS}`);
                 CreepFactory.createCreep(ROLE_SUPPLIER, spawn);
+            }
+        }
+    }
+
+    static renewCreeps() {
+        const spawn = this.getAvailableSpawn();
+        if (!spawn) return;
+
+        const managers = _.filter(Game.creeps, (creep) => creep.memory.role === ROLE_MANAGER);
+        for (const manager of managers) {
+            if (manager.ticksToLive < 1000 && spawn.renewCreep(manager) === ERR_NOT_IN_RANGE) {
+                manager.moveTo(spawn);
             }
         }
     }
