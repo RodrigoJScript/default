@@ -43,6 +43,21 @@ class BodyBuilder {
             return bodyParts;
         }
 
+        if (role === 'manager') {
+            const minimumRequiredEnergy = 16 * bodyCosts['carry'] + bodyCosts['move'];
+            if (remainingEnergy < minimumRequiredEnergy) {
+                return [];
+            }
+
+            for (let i = 0; i < 16; i++) {
+                bodyParts.push(CARRY);
+            }
+
+            bodyParts.push(MOVE);
+
+            return bodyParts;
+        }
+
         const minimumRequiredEnergy = bodyCosts['work'] + 2 * bodyCosts['carry'] + 2 * bodyCosts['move'];
         if (remainingEnergy < minimumRequiredEnergy) {
             return [];
