@@ -9,7 +9,7 @@ class BodyBuilder {
 
         let remainingEnergy = energyAvailable;
 
-        if (role === 'hauler') {
+        if (role === 'hauler' || role === 'supplier') {
             const minimumRequiredEnergy = bodyCosts['carry'] + bodyCosts['move'];
             if (remainingEnergy < minimumRequiredEnergy) {
                 return [];
