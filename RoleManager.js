@@ -19,31 +19,11 @@ class RoleManager extends CreepRole {
                 this.enhancedMoveTo(storage);
             }
         } else {
-            const centralLink = this.getCentralLink(this.creep.room);
-            if (centralLink && this.creep.withdraw(centralLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                this.enhancedMoveTo(centralLink);
+            const link = Game.getObjectById(this.creep.memory.linkId);
+            if (link && this.creep.withdraw(link, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                this.enhancedMoveTo(link);
             }
         }
-    }
-
-    getCentralLink(room) {
-        const spawn = room.find(FIND_MY_SPAWNS)[0];
-        const links = room.find(FIND_MY_STRUCTURES, {
-            filter: { structureType: STRUCTURE_LINK }
-        });
-
-        let centralLink = null;
-        let minDistance = Infinity;
-
-        for (const link of links) {
-            const distance = spawn.pos.getRangeTo(link);
-            if (distance < minDistance) {
-                minDistance = distance;
-                centralLink = link;
-            }
-        }
-
-        return centralLink;
     }
 }
 

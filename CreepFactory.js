@@ -6,7 +6,13 @@ class CreepFactory {
     static createCreep(role, spawn) {
         const body = BodyBuilder.getBodyForRole(role, spawn.room.energyAvailable);
         const name = NameGenerator.generateUniqueName(role);
-        const result = spawn.spawnCreep(body, name);
+        const spawnOptions = {};
+
+        if (role === 'manager') {
+            spawnOptions.directions = [BOTTOM];
+        }
+
+        const result = spawn.spawnCreep(body, name, spawnOptions);
 
         if (result == OK) {
             AssignerRole.assignRoleToCreep(name, role, spawn.room);

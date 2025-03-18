@@ -10,13 +10,13 @@ const ROLE_WALL_FORTIFIER = 'wallFortifier';
 const ROLE_MANAGER = 'manager';
 const ROLE_SUPPLIER = 'supplier';
 
-const DESIRED_HARVESTERS = 0;
-const DESIRED_BUILDERS = 0;
-const DESIRED_UPGRADERS = 0;
-const DESIRED_HAULERS = 0;
-const DESIRED_SCAVENGERS = 0;
-const DESIRED_WALL_FORTIFIERS = 0;
-const DESIRED_MANAGERS = 0;
+const DESIRED_HARVESTERS = 2;
+const DESIRED_BUILDERS = 1;
+const DESIRED_UPGRADERS = 1;
+const DESIRED_HAULERS = 1;
+const DESIRED_SCAVENGERS = 1;
+const DESIRED_WALL_FORTIFIERS = 1;
+const DESIRED_MANAGERS = 1;
 const DESIRED_SUPPLIERS = 1;
 
 class SpawnManager {
@@ -53,7 +53,7 @@ class SpawnManager {
                 console.log(`Spawning scavenger. Current: ${currentScavengers}, Desired: ${DESIRED_SCAVENGERS}`);
                 CreepFactory.createCreep(ROLE_SCAVENGER, spawn);
             } else if (currentWallFortifiers < DESIRED_WALL_FORTIFIERS) {
-                console.log(`Spawning wallFOrtifier. Current: ${currentWallFortifiers}, Desired: ${DESIRED_WALL_FORTIFIERS}`);
+                console.log(`Spawning wallFortifier. Current: ${currentWallFortifiers}, Desired: ${DESIRED_WALL_FORTIFIERS}`);
                 CreepFactory.createCreep(ROLE_WALL_FORTIFIER, spawn);
             } else if (currentManagers < DESIRED_MANAGERS) {
                 console.log(`Spawning manager. Current: ${currentManagers}, Desired: ${DESIRED_MANAGERS}`);

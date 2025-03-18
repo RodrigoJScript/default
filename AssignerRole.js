@@ -6,6 +6,8 @@ class AssignerRole {
             this.assignHarvesterSource(creepMemory, room);
         } else if (role === 'hauler') {
             this.assignHaulerContainer(creepMemory, room);
+        } else if (role === 'manager') {
+            this.assignManagerLink(creepMemory, room);
         }
 
         Memory.creeps[name] = creepMemory;
@@ -34,6 +36,30 @@ class AssignerRole {
             creepMemory.containerId = availableContainers[0].id;
         } else {
             creepMemory.containerId = containers[0].id;
+        }
+    }
+
+    static assignManagerLink(creepMemory, room) {
+        const storage = room.storage;
+        if (!storage) return;
+
+        const links = room.find(FIND_MY_STRUCTURES, {
+            filter: { structureType: STRUCTURE_LINK }
+        });
+
+        let closestLink = null;
+        let minDistance = Infinity;
+
+        for (const link of links) {
+            const distance = storage.pos.getRangeTo(link);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestLink = link;
+            }
+        }
+
+        if (closestLink) {
+            creepMemory.linkId = closestLink.id;
         }
     }
 }
