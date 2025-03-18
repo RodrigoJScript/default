@@ -10,8 +10,7 @@ class RoleScavenger extends CreepRole {
         if (this.creep.memory.working && this.creep.store.getFreeCapacity() == 0) {
             this.creep.memory.working = false;
         }
-        if (!this.creep.memory.working && this.creep.store[RESOURCE_ENERGY] == 0) {
-            this.creep.memory.working = true;
+        if (!this.creep.memory.working && this.creep.store.getCapacity() == 0) {
         }
 
         if (this.creep.memory.working) {
@@ -42,9 +41,8 @@ class RoleScavenger extends CreepRole {
             // Find the closest structure that can store energy
             let target = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return (structure.structureType == STRUCTURE_SPAWN ||
-                        structure.structureType == STRUCTURE_EXTENSION ||
-                        structure.structureType == STRUCTURE_TOWER ) &&
+                    return (
+                        structure.structureType == STRUCTURE_STORAGE ) &&
                         structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
                 }
             });

@@ -16,7 +16,7 @@ class BodyBuilder {
             }
 
             const pairCost = bodyCosts['carry'] + bodyCosts['move'];
-            const numberOfPairs = Math.min(10, Math.floor(remainingEnergy / pairCost));
+            const numberOfPairs = Math.min(15, Math.floor(remainingEnergy / pairCost));
 
             for (let i = 0; i < numberOfPairs; i++) {
                 bodyParts.push(CARRY);
@@ -27,18 +27,15 @@ class BodyBuilder {
         }
 
         if (role === 'scavenger') {
-            // Ensure there is enough energy for 4 move parts and 2 carry parts
             const minimumRequiredEnergy = 4 * bodyCosts['move'] + 2 * bodyCosts['carry'];
             if (remainingEnergy < minimumRequiredEnergy) {
-                return []; // Not enough energy to spawn a scavenger with the required parts
+                return [];
             }
 
-            // Add 4 move parts
             for (let i = 0; i < 4; i++) {
                 bodyParts.push(MOVE);
             }
 
-            // Add 2 carry parts
             for (let i = 0; i < 2; i++) {
                 bodyParts.push(CARRY);
             }
@@ -46,21 +43,16 @@ class BodyBuilder {
             return bodyParts;
         }
 
-        // Ensure there is enough energy for at least one work, two carry, and two move parts
         const minimumRequiredEnergy = bodyCosts['work'] + 2 * bodyCosts['carry'] + 2 * bodyCosts['move'];
         if (remainingEnergy < minimumRequiredEnergy) {
-            return []; // Not enough energy to spawn a creep with the minimum required parts
+            return [];
         }
 
-        // Add two carry parts first
         remainingEnergy = this.addBodyParts(bodyParts, CARRY, 2, bodyCosts['carry'], remainingEnergy);
-        // Add two move parts
         remainingEnergy = this.addBodyParts(bodyParts, MOVE, 2, bodyCosts['move'], remainingEnergy);
-        // Add one work part
         remainingEnergy = this.addBodyParts(bodyParts, WORK, 1, bodyCosts['work'], remainingEnergy);
 
-        // Add work parts with the remaining energy, up to a maximum of 5 work parts
-        let workPartsCount = 1; // Already added one work part
+        let workPartsCount = 1;
         while (remainingEnergy >= bodyCosts['work'] && workPartsCount < 6) {
             bodyParts.push(WORK);
             remainingEnergy -= bodyCosts['work'];
