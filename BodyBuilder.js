@@ -9,7 +9,7 @@ class BodyBuilder {
 
         let remainingEnergy = energyAvailable;
 
-        if (role === 'hauler' || role === 'supplier') {
+        if (role === 'hauler' || role === 'supplier' || role === 'courier') {
             const minimumRequiredEnergy = bodyCosts['carry'] + bodyCosts['move'];
             if (remainingEnergy < minimumRequiredEnergy) {
                 return [];
@@ -17,23 +17,6 @@ class BodyBuilder {
 
             const pairCost = bodyCosts['carry'] + bodyCosts['move'];
             const numberOfPairs = Math.min(12, Math.floor(remainingEnergy / pairCost));
-
-            for (let i = 0; i < numberOfPairs; i++) {
-                bodyParts.push(CARRY);
-                bodyParts.push(MOVE);
-            }
-
-            return bodyParts;
-        }
-
-        if (role === 'courier') {
-            const minimumRequiredEnergy = bodyCosts['carry'] + bodyCosts['move'];
-            if (remainingEnergy < minimumRequiredEnergy) {
-                return [];
-            }
-
-            const pairCost = bodyCosts['carry'] + bodyCosts['move'];
-            const numberOfPairs = Math.min(25, Math.floor(remainingEnergy / pairCost));
 
             for (let i = 0; i < numberOfPairs; i++) {
                 bodyParts.push(CARRY);

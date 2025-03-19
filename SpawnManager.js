@@ -13,13 +13,13 @@ const ROLE_COURIER = 'courier';
 
 const DESIRED_HARVESTERS = 2;
 const DESIRED_BUILDERS = 1;
-const DESIRED_UPGRADERS = 1;
+const DESIRED_UPGRADERS = 3;
 const DESIRED_HAULERS = 0;
 const DESIRED_SCAVENGERS = 1;
 const DESIRED_WALL_FORTIFIERS = 1;
 const DESIRED_MANAGERS = 1;
 const DESIRED_SUPPLIERS = 2;
-const DESIRED_COURIERS = 2;
+const DESIRED_COURIERS = 3;
 
 class SpawnManager {
     static run() {
