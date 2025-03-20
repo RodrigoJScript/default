@@ -20,30 +20,27 @@ class RoleBuilder extends CreepRole {
                     this.enhancedMoveTo(target);
                 }
             } else {
-                const damagedStructure = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                    filter: (structure) => structure.hits < structure.hitsMax &&
-                        structure.structureType !== STRUCTURE_WALL &&
-                        structure.structureType !== STRUCTURE_RAMPART
-                });
-                if (damagedStructure) {
-                    if (this.creep.repair(damagedStructure) == ERR_NOT_IN_RANGE) {
-                        this.enhancedMoveTo(damagedStructure);
+                const controller = this.creep.room.controller;
+                if (controller) {
+                    if (this.creep.upgradeController(controller) == ERR_NOT_IN_RANGE) {
+                        this.enhancedMoveTo(controller);
                     }
                 }
             }
         } else {
             let source = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType == STRUCTURE_STORAGE || structure.structureType === STRUCTURE_CONTAINER &&
-                        Memory.containersCouriers.includes(structure.id) &&
-                        structure.store[RESOURCE_ENERGY] > 0;
+                    return structure.structureType === STRUCTURE_STORAGE ||
+                        (structure.structureType === STRUCTURE_CONTAINER &&
+                            Memory.containersCouriers.includes(structure.id) &&
+                            structure.store[RESOURCE_ENERGY] > 0);
                 }
             });
 
             if (!source) {
                 source = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
                     filter: (structure) => {
-                        return structure.structureType == STRUCTURE_CONTAINER &&
+                        return structure.structureType === STRUCTURE_CONTAINER &&
                             structure.store[RESOURCE_ENERGY] > 0;
                     }
                 });
