@@ -31,10 +31,11 @@ class RoleBuilder extends CreepRole {
             // Find the closest storage with energy
             let source = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType === STRUCTURE_STORAGE ||
-                        (structure.structureType === STRUCTURE_CONTAINER &&
-                            Memory.containersCouriers.includes(structure.id) &&
-                            structure.store[RESOURCE_ENERGY] > 0);
+                    return (
+                        (structure.structureType === STRUCTURE_STORAGE ||
+                            structure.structureType === STRUCTURE_CONTAINER) &&
+                        structure.store[RESOURCE_ENERGY] > 0
+                    );
                 }
             });
 
