@@ -16,11 +16,35 @@ class BodyBuilder {
             }
 
             const pairCost = bodyCosts['carry'] + bodyCosts['move'];
-            const numberOfPairs = Math.min(10, Math.floor(remainingEnergy / pairCost));
+            const numberOfPairs = Math.min(6, Math.floor(remainingEnergy / pairCost));
 
             for (let i = 0; i < numberOfPairs; i++) {
                 bodyParts.push(CARRY);
                 bodyParts.push(MOVE);
+            }
+
+            return bodyParts;
+        }
+
+        if (role === 'upgrader') {
+            const minimumRequiredEnergy = bodyCosts['work'] + bodyCosts['carry'] + bodyCosts['move'];
+            if (remainingEnergy < minimumRequiredEnergy) {
+                return [];
+            }
+
+            remainingEnergy = this.addBodyParts(bodyParts, CARRY, 2, bodyCosts['carry'], remainingEnergy);
+            remainingEnergy = this.addBodyParts(bodyParts, MOVE, 2, bodyCosts['move'], remainingEnergy);
+
+            let workPartsCount = 0;
+            while (remainingEnergy >= bodyCosts['work'] && workPartsCount < 10) { // Límite de 10 partes WORK
+                bodyParts.push(WORK);
+                remainingEnergy -= bodyCosts['work'];
+                workPartsCount++;
+            }
+
+            if (remainingEnergy >= bodyCosts['move']) {
+                bodyParts.push(MOVE);
+                remainingEnergy -= bodyCosts['move'];
             }
 
             return bodyParts;
@@ -68,15 +92,10 @@ class BodyBuilder {
         remainingEnergy = this.addBodyParts(bodyParts, WORK, 1, bodyCosts['work'], remainingEnergy);
 
         let workPartsCount = 1;
-        while (remainingEnergy >= bodyCosts['work'] && workPartsCount < 5) {
+        while (remainingEnergy >= bodyCosts['work'] && workPartsCount < 6) {
             bodyParts.push(WORK);
             remainingEnergy -= bodyCosts['work'];
             workPartsCount++;
-        }
-
-        if (workPartsCount === 5 && remainingEnergy >= bodyCosts['move']) {
-            bodyParts.push(MOVE);
-            remainingEnergy -= bodyCosts['move'];
         }
 
         return bodyParts;

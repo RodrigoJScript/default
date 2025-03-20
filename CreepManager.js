@@ -8,6 +8,8 @@ const RoleWallFortifier = require('./RoleWallFortifier');
 const RoleManager = require('./RoleManager');
 const RoleSupplier = require('./RoleSupplier');
 const RoleCourier = require('./RoleCourier');
+const RoleAttacker = require('./RoleAttacker');
+const RoleHealer = require('./RoleHealer');
 
 const ROLE_HARVESTER = 'harvester';
 const ROLE_BUILDER = 'builder';
@@ -18,6 +20,8 @@ const ROLE_WALL_FORTIFIER = 'wallFortifier';
 const ROLE_MANAGER = 'manager';
 const ROLE_SUPPLIER = 'supplier';
 const ROLE_COURIER = 'courier';
+const ROLE_ATTACKER = 'attacker';
+const ROLE_HEALER = 'healer';
 class CreepManager {
     static run() {
         MemoryManager.cleanCreepMemory();
@@ -34,7 +38,9 @@ class CreepManager {
             [ROLE_WALL_FORTIFIER]: RoleWallFortifier,
             [ROLE_MANAGER]: RoleManager,
             [ROLE_SUPPLIER]: RoleSupplier,
-            [ROLE_COURIER]: RoleCourier
+            [ROLE_COURIER]: RoleCourier,
+            [ROLE_ATTACKER]: RoleAttacker,
+            [ROLE_HEALER]: RoleHealer
         };
 
         for (let name in Game.creeps) {
