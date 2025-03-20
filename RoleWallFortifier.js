@@ -1,6 +1,6 @@
 const CreepRole = require("./CreepRole");
 
-class RoleBuilder extends CreepRole {
+class RoleWallFortifier extends CreepRole {
     constructor(creep) {
         super(creep);
     }
@@ -14,21 +14,10 @@ class RoleBuilder extends CreepRole {
         }
 
         if (this.creep.memory.working) {
-            const target = this.creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+            const target = this.findLowestHitWallOrRampart();
             if (target) {
-                if (this.creep.build(target) == ERR_NOT_IN_RANGE) {
+                if (this.creep.repair(target) == ERR_NOT_IN_RANGE) {
                     this.enhancedMoveTo(target);
-                }
-            } else {
-                const damagedStructure = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                    filter: (structure) => structure.hits < structure.hitsMax &&
-                        structure.structureType !== STRUCTURE_WALL &&
-                        structure.structureType !== STRUCTURE_RAMPART
-                });
-                if (damagedStructure) {
-                    if (this.creep.repair(damagedStructure) == ERR_NOT_IN_RANGE) {
-                        this.enhancedMoveTo(damagedStructure);
-                    }
                 }
             }
         } else {
@@ -58,6 +47,22 @@ class RoleBuilder extends CreepRole {
             }
         }
     }
+
+    findLowestHitWallOrRampart() {
+        const targets = this.creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return (structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART) &&
+                    structure.hits < structure.hitsMax;
+            }
+        });
+
+        if (targets.length > 0) {
+            targets.sort((a, b) => a.hits - b.hits);
+            return targets[0];
+        }
+
+        return null;
+    }
 }
 
-module.exports = RoleBuilder;
+module.exports = RoleWallFortifier;

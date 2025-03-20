@@ -6,16 +6,25 @@ const ROLE_BUILDER = 'builder';
 const ROLE_UPGRADER = 'upgrader';
 const ROLE_HAULER = 'hauler';
 const ROLE_SCAVENGER = 'scavenger';
+const ROLE_WALL_FORTIFIER = 'wallFortifier';
+const ROLE_MANAGER = 'manager';
+const ROLE_SUPPLIER = 'supplier';
+const ROLE_COURIER = 'courier';
 
 const DESIRED_HARVESTERS = 2;
 const DESIRED_BUILDERS = 1;
-const DESIRED_UPGRADERS = 1;
+const DESIRED_UPGRADERS = 3;
 const DESIRED_HAULERS = 1;
 const DESIRED_SCAVENGERS = 0;
+const DESIRED_WALL_FORTIFIERS = 0;
+const DESIRED_MANAGERS = 0;
+const DESIRED_SUPPLIERS = 0;
+const DESIRED_COURIERS = 0;
 
 class SpawnManager {
     static run() {
         this.spawnCreepsIfNeeded();
+        this.renewCreeps();
     }
 
     static spawnCreepsIfNeeded() {
@@ -24,6 +33,10 @@ class SpawnManager {
         const currentUpgraders = CreepManager.getCreepCountByRole(ROLE_UPGRADER);
         const currentHaulers = CreepManager.getCreepCountByRole(ROLE_HAULER);
         const currentScavengers = CreepManager.getCreepCountByRole(ROLE_SCAVENGER);
+        const currentWallFortifiers = CreepManager.getCreepCountByRole(ROLE_WALL_FORTIFIER);
+        const currentManagers = CreepManager.getCreepCountByRole(ROLE_MANAGER);
+        const currentSuppliers = CreepManager.getCreepCountByRole(ROLE_SUPPLIER);
+        const currentCouriers = CreepManager.getCreepCountByRole(ROLE_COURIER);
 
         const spawn = this.getAvailableSpawn();
 
@@ -43,6 +56,30 @@ class SpawnManager {
             } else if (currentScavengers < DESIRED_SCAVENGERS) {
                 console.log(`Spawning scavenger. Current: ${currentScavengers}, Desired: ${DESIRED_SCAVENGERS}`);
                 CreepFactory.createCreep(ROLE_SCAVENGER, spawn);
+            } else if (currentWallFortifiers < DESIRED_WALL_FORTIFIERS) {
+                console.log(`Spawning wallFortifier. Current: ${currentWallFortifiers}, Desired: ${DESIRED_WALL_FORTIFIERS}`);
+                CreepFactory.createCreep(ROLE_WALL_FORTIFIER, spawn);
+            } else if (currentManagers < DESIRED_MANAGERS) {
+                console.log(`Spawning manager. Current: ${currentManagers}, Desired: ${DESIRED_MANAGERS}`);
+                CreepFactory.createCreep(ROLE_MANAGER, spawn);
+            } else if (currentSuppliers < DESIRED_SUPPLIERS) {
+                console.log(`Spawning supplier. Current: ${currentSuppliers}, Desired: ${DESIRED_SUPPLIERS}`);
+                CreepFactory.createCreep(ROLE_SUPPLIER, spawn);
+            } else if (currentCouriers < DESIRED_COURIERS) {
+                console.log(`Spawning courier. Current: ${currentCouriers}, Desired: ${DESIRED_COURIERS}`);
+                CreepFactory.createCreep(ROLE_COURIER, spawn);
+            }
+        }
+    }
+
+    static renewCreeps() {
+        const spawn = this.getAvailableSpawn();
+        if (!spawn) return;
+
+        const managers = _.filter(Game.creeps, (creep) => creep.memory.role === ROLE_MANAGER);
+        for (const manager of managers) {
+            if (manager.ticksToLive < 1200 && spawn.renewCreep(manager) === ERR_NOT_IN_RANGE) {
+                manager.moveTo(spawn);
             }
         }
     }

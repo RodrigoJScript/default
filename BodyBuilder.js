@@ -9,14 +9,14 @@ class BodyBuilder {
 
         let remainingEnergy = energyAvailable;
 
-        if (role === 'hauler') {
+        if (role === 'hauler' || role === 'supplier' || role === 'courier') {
             const minimumRequiredEnergy = bodyCosts['carry'] + bodyCosts['move'];
             if (remainingEnergy < minimumRequiredEnergy) {
                 return [];
             }
 
             const pairCost = bodyCosts['carry'] + bodyCosts['move'];
-            const numberOfPairs = Math.min(15, Math.floor(remainingEnergy / pairCost));
+            const numberOfPairs = Math.min(12, Math.floor(remainingEnergy / pairCost));
 
             for (let i = 0; i < numberOfPairs; i++) {
                 bodyParts.push(CARRY);
@@ -43,6 +43,21 @@ class BodyBuilder {
             return bodyParts;
         }
 
+        if (role === 'manager') {
+            const minimumRequiredEnergy = 16 * bodyCosts['carry'] + bodyCosts['move'];
+            if (remainingEnergy < minimumRequiredEnergy) {
+                return [];
+            }
+
+            for (let i = 0; i < 16; i++) {
+                bodyParts.push(CARRY);
+            }
+
+            bodyParts.push(MOVE);
+
+            return bodyParts;
+        }
+
         const minimumRequiredEnergy = bodyCosts['work'] + 2 * bodyCosts['carry'] + 2 * bodyCosts['move'];
         if (remainingEnergy < minimumRequiredEnergy) {
             return [];
@@ -53,10 +68,15 @@ class BodyBuilder {
         remainingEnergy = this.addBodyParts(bodyParts, WORK, 1, bodyCosts['work'], remainingEnergy);
 
         let workPartsCount = 1;
-        while (remainingEnergy >= bodyCosts['work'] && workPartsCount < 6) {
+        while (remainingEnergy >= bodyCosts['work'] && workPartsCount < 5) {
             bodyParts.push(WORK);
             remainingEnergy -= bodyCosts['work'];
             workPartsCount++;
+        }
+
+        if (workPartsCount === 5 && remainingEnergy >= bodyCosts['move']) {
+            bodyParts.push(MOVE);
+            remainingEnergy -= bodyCosts['move'];
         }
 
         return bodyParts;
