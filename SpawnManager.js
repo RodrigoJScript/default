@@ -8,10 +8,10 @@ const ROLE_HAULER = 'hauler';
 const ROLE_SCAVENGER = 'scavenger';
 
 const DESIRED_HARVESTERS = 2;
-const DESIRED_BUILDERS = 2;
-const DESIRED_UPGRADERS = 2;
-const DESIRED_HAULERS = 2;
-const DESIRED_SCAVENGERS = 1;
+const DESIRED_BUILDERS = 1;
+const DESIRED_UPGRADERS = 1;
+const DESIRED_HAULERS = 1;
+const DESIRED_SCAVENGERS = 0;
 
 class SpawnManager {
     static run() {

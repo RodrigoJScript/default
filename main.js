@@ -8,4 +8,13 @@ module.exports.loop = function () {
     CreepManager.run();
     SpawnManager.run();
     StructureTower.runAll();
+    
+        if (Game.cpu.bucket >= 5000) {
+        const result = Game.cpu.generatePixel();
+        if (result === OK) {
+            console.log("Pixel generado exitosamente.");
+        } else {
+            console.log(`Error al generar pixel: ${result}`);
+        }
+    }
 }
