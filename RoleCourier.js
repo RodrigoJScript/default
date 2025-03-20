@@ -20,7 +20,7 @@ class RoleCourier extends CreepRole {
                     this.enhancedMoveTo(container);
                 }
             } else {
-                console.log(`Creep ${this.creep.name} no encontró un contenedor válido o está lleno.`);
+
             }
         } else {
             const storage = this.creep.room.storage;

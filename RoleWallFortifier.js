@@ -23,7 +23,8 @@ class RoleWallFortifier extends CreepRole {
         } else {
             let source = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType == STRUCTURE_STORAGE || structure.structureType == STRUCTURE_CONTAINER &&
+                    return structure.structureType == STRUCTURE_STORAGE || structure.structureType === STRUCTURE_CONTAINER &&
+                        Memory.containersCouriers.includes(structure.id) &&
                         structure.store[RESOURCE_ENERGY] > 0;
                 }
             });

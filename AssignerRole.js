@@ -29,7 +29,7 @@ class AssignerRole {
 
     static assignHaulerContainer(creepMemory, room) {
         const containers = room.find(FIND_STRUCTURES, {
-            filter: (structure) => structure.structureType === STRUCTURE_CONTAINER
+            filter: (structure) => structure.structureType === STRUCTURE_CONTAINER && Memory.haulerContainers.includes(structure.id)
         });
         const assignedContainers = _.map(_.filter(Game.creeps, (creep) => creep.memory.role === 'hauler'), (creep) => creep.memory.containerId);
         const availableContainers = _.filter(containers, (container) => !_.includes(assignedContainers, container.id));
@@ -37,7 +37,7 @@ class AssignerRole {
         if (availableContainers.length > 0) {
             creepMemory.containerId = availableContainers[0].id;
         } else {
-            creepMemory.containerId = containers[0].id;
+            console.log("No hay contenedores disponibles para asignar al hauler.");
         }
     }
 
@@ -67,10 +67,11 @@ class AssignerRole {
 
     static assignCourierContainer(creepMemory, room) {
         const containers = room.find(FIND_STRUCTURES, {
-            filter: (structure) => structure.structureType === STRUCTURE_CONTAINER
+            filter: (structure) => structure.structureType === STRUCTURE_CONTAINER && Memory.containersCouriers.includes(structure.id)
         });
 
         const assignedContainers = _.map(_.filter(Game.creeps, (creep) => creep.memory.role === 'courier'), (creep) => creep.memory.containerId);
+
         const availableContainers = _.filter(containers, (container) => !_.includes(assignedContainers, container.id));
 
         if (availableContainers.length > 0) {

@@ -32,15 +32,14 @@ class RoleBuilder extends CreepRole {
                 }
             }
         } else {
-            // Find the closest storage with energy
             let source = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType == STRUCTURE_STORAGE || structure.structureType == STRUCTURE_CONTAINER &&
+                    return structure.structureType == STRUCTURE_STORAGE || structure.structureType === STRUCTURE_CONTAINER &&
+                        Memory.containersCouriers.includes(structure.id) &&
                         structure.store[RESOURCE_ENERGY] > 0;
                 }
             });
 
-            // If no storage has energy, find the closest container with energy
             if (!source) {
                 source = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
                     filter: (structure) => {
@@ -50,7 +49,6 @@ class RoleBuilder extends CreepRole {
                 });
             }
 
-            // If no containers have energy, find the closest energy source
             if (!source) {
                 source = this.creep.pos.findClosestByPath(FIND_SOURCES);
             }
