@@ -14,36 +14,38 @@ class RoleUpgrader extends CreepRole {
         }
 
         if (this.creep.memory.working) {
-            // Move to and upgrade the controller
+            // Moverse y mejorar el controlador
             if (this.creep.upgradeController(this.creep.room.controller) == ERR_NOT_IN_RANGE) {
                 this.enhancedMoveTo(this.creep.room.controller);
             }
         } else {
-            let source = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => {
-                    return structure.structureType == STRUCTURE_STORAGE || structure.structureType === STRUCTURE_CONTAINER &&
-                        Memory.containersCouriers.includes(structure.id) &&
-                        structure.store[RESOURCE_ENERGY] > 0;
-                }
-            });
+            // Priorizar el linkUpgrade para extraer energía
+            let source = Game.getObjectById(Memory.linkUpgrade);
 
-            // If no energy in storage, find the closest container with energy
-            if (!source) {
+            // Si no hay energía en el linkUpgrade, buscar en almacenamiento o contenedores
+            if (!source || source.store[RESOURCE_ENERGY] == 0) {
                 source = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
                     filter: (structure) => {
-                        return structure.structureType == STRUCTURE_CONTAINER &&
+                        return (structure.structureType == STRUCTURE_STORAGE || structure.structureType == STRUCTURE_CONTAINER) &&
                             structure.store[RESOURCE_ENERGY] > 0;
                     }
                 });
             }
 
-            // If no containers have energy, find the closest energy source
+            // Si no hay almacenamiento o contenedores con energía, buscar una fuente de energía natural
             if (!source) {
                 source = this.creep.pos.findClosestByPath(FIND_SOURCES);
             }
 
-            if (source && (this.creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE || this.creep.harvest(source) == ERR_NOT_IN_RANGE)) {
-                this.enhancedMoveTo(source);
+            // Intentar extraer energía del source encontrado
+            if (source) {
+                if (source.structureType === STRUCTURE_LINK || source.structureType === STRUCTURE_STORAGE || source.structureType === STRUCTURE_CONTAINER) {
+                    if (this.creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        this.enhancedMoveTo(source);
+                    }
+                } else if (this.creep.harvest(source) == ERR_NOT_IN_RANGE) {
+                    this.enhancedMoveTo(source);
+                }
             }
         }
     }
