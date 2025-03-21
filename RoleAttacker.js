@@ -34,23 +34,27 @@ class RoleRangedAttacker extends CreepRole {
 
         // Buscar todos los creeps enemigos cercanos
         const hostileCreeps = this.creep.room.find(FIND_HOSTILE_CREEPS);
-        const closeEnemies = hostileCreeps.filter((hostile) => this.creep.pos.getRangeTo(hostile) <= 3);
+        const veryCloseEnemies = hostileCreeps.filter((hostile) => this.creep.pos.getRangeTo(hostile) <= 2);
 
-        // Si hay enemigos cercanos, atacar antes de huir
-        if (closeEnemies.length > 0) {
-            if (target && this.creep.rangedAttack(target) === ERR_NOT_IN_RANGE) {
-                this.creep.moveTo(target, { visualizePathStyle: { stroke: '#ff0000' } });
+        // Si hay enemigos muy cercanos (a menos de 2 casillas), atacar antes de huir
+        if (veryCloseEnemies.length > 0) {
+            if (target && this.creep.rangedAttack(target) === OK) {
+                // Si el ataque fue exitoso, actualizar el objetivo compartido
+                Memory.sharedTarget = target.id;
             }
 
-            // Huir de los enemigos cercanos
-            const fleePath = PathFinder.search(this.creep.pos, closeEnemies.map((hostile) => ({ pos: hostile.pos, range: 5 })), { flee: true });
+            // Huir de los enemigos muy cercanos
+            const fleePath = PathFinder.search(this.creep.pos, veryCloseEnemies.map((hostile) => ({ pos: hostile.pos, range: 5 })), { flee: true });
             this.creep.moveByPath(fleePath.path);
             return;
         }
 
-        // Si no hay enemigos cercanos, atacar al objetivo compartido
+        // Si no hay enemigos muy cercanos, atacar al objetivo compartido
         if (target) {
-            if (this.creep.rangedAttack(target) === ERR_NOT_IN_RANGE) {
+            if (this.creep.rangedAttack(target) === OK) {
+                // Si el ataque fue exitoso, actualizar el objetivo compartido
+                Memory.sharedTarget = target.id;
+            } else if (this.creep.rangedAttack(target) === ERR_NOT_IN_RANGE) {
                 this.creep.moveTo(target, { visualizePathStyle: { stroke: '#ff0000' } });
             }
             return;
