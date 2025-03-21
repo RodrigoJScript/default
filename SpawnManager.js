@@ -10,6 +10,7 @@ const ROLE_WALL_FORTIFIER = 'wallFortifier';
 const ROLE_MANAGER = 'manager';
 const ROLE_SUPPLIER = 'supplier';
 const ROLE_COURIER = 'courier';
+const ROLE_REPAIRER = 'repairer';
 
 const DESIRED_HARVESTERS = 2;
 const DESIRED_BUILDERS = 0;
@@ -18,8 +19,9 @@ const DESIRED_HAULERS = 0;
 const DESIRED_SCAVENGERS = 1;
 const DESIRED_WALL_FORTIFIERS = 0;
 const DESIRED_MANAGERS = 1;
-const DESIRED_SUPPLIERS = 2;
+const DESIRED_SUPPLIERS = 1;
 const DESIRED_COURIERS = 1;
+const DESIRED_REPAIRERS = 0;
 
 class SpawnManager {
     static run() {
@@ -37,6 +39,7 @@ class SpawnManager {
         const currentManagers = CreepManager.getCreepCountByRole(ROLE_MANAGER);
         const currentSuppliers = CreepManager.getCreepCountByRole(ROLE_SUPPLIER);
         const currentCouriers = CreepManager.getCreepCountByRole(ROLE_COURIER);
+        const currentRepairers = CreepManager.getCreepCountByRole(ROLE_REPAIRER);
 
         const spawn = this.getAvailableSpawn();
 
@@ -68,6 +71,9 @@ class SpawnManager {
             } else if (currentCouriers < DESIRED_COURIERS) {
                 console.log(`Spawning courier. Current: ${currentCouriers}, Desired: ${DESIRED_COURIERS}`);
                 CreepFactory.createCreep(ROLE_COURIER, spawn);
+            } else if (currentRepairers < DESIRED_REPAIRERS) {
+                console.log(`Spawning repairer. Current: ${currentRepairers}, Desired: ${DESIRED_REPAIRERS}`);
+                CreepFactory.createCreep(ROLE_REPAIRER, spawn);
             }
         }
     }
