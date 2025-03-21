@@ -1,6 +1,6 @@
 const CreepRole = require("./CreepRole");
 
-class RoleAttacker extends CreepRole {
+class RoleRangedAttacker extends CreepRole {
     constructor(creep) {
         super(creep);
     }
@@ -17,50 +17,50 @@ class RoleAttacker extends CreepRole {
         if (this.creep.room.name !== attackFlag.pos.roomName) {
             this.creep.moveTo(attackFlag, {
                 visualizePathStyle: { stroke: '#ff0000' },
-                costCallback: (roomName, costMatrix) => {
-                    const room = Game.rooms[roomName];
-                    // Evitar salas con controladores de nivel > 3, excepto si es mi sala
-                    if (room && room.controller) {
-                        if (room.controller.my) {
-                            return costMatrix; // Permitir mi propia sala
-                        }
-                        if (room.controller.level > 3) {
-                            console.log(`Evitando sala ${roomName} con controlador de nivel ${room.controller.level}`);
-                            return false; // Evitar esta sala
-                        }
-                    }
-                    return costMatrix;
-                }
             });
             return;
         }
 
-        // Si ya está en la sala de la bandera, buscar el spawn enemigo
-        const enemySpawn = this.creep.pos.findClosestByPath(FIND_HOSTILE_SPAWNS);
-        if (enemySpawn) {
-            if (this.creep.attack(enemySpawn) === ERR_NOT_IN_RANGE) {
-                this.creep.moveTo(enemySpawn, { visualizePathStyle: { stroke: '#ff0000' } });
+        // Obtener el objetivo compartido en la memoria global
+        if (!Memory.sharedTarget || !Game.getObjectById(Memory.sharedTarget)) {
+            // Si no hay un objetivo compartido o el objetivo ya no existe, buscar uno nuevo
+            const newTarget = this.creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
+            if (newTarget) {
+                Memory.sharedTarget = newTarget.id; // Guardar el nuevo objetivo en la memoria global
+            }
+        }
+
+        const target = Game.getObjectById(Memory.sharedTarget);
+
+        // Buscar todos los creeps enemigos cercanos
+        const hostileCreeps = this.creep.room.find(FIND_HOSTILE_CREEPS);
+        const closeEnemies = hostileCreeps.filter((hostile) => this.creep.pos.getRangeTo(hostile) <= 3);
+
+        // Si hay enemigos cercanos, atacar antes de huir
+        if (closeEnemies.length > 0) {
+            if (target && this.creep.rangedAttack(target) === ERR_NOT_IN_RANGE) {
+                this.creep.moveTo(target, { visualizePathStyle: { stroke: '#ff0000' } });
+            }
+
+            // Huir de los enemigos cercanos
+            const fleePath = PathFinder.search(this.creep.pos, closeEnemies.map((hostile) => ({ pos: hostile.pos, range: 5 })), { flee: true });
+            this.creep.moveByPath(fleePath.path);
+            return;
+        }
+
+        // Si no hay enemigos cercanos, atacar al objetivo compartido
+        if (target) {
+            if (this.creep.rangedAttack(target) === ERR_NOT_IN_RANGE) {
+                this.creep.moveTo(target, { visualizePathStyle: { stroke: '#ff0000' } });
             }
             return;
         }
 
-        // Si no hay spawn, buscar muros que bloqueen el camino
-        const blockingWall = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: (structure) => structure.structureType === STRUCTURE_WALL
-        });
-
-        if (blockingWall) {
-            if (this.creep.attack(blockingWall) === ERR_NOT_IN_RANGE) {
-                this.creep.moveTo(blockingWall, { visualizePathStyle: { stroke: '#ff0000' } });
-            }
-            return;
-        }
-
-        // Si no hay spawn ni muros, atacar creeps enemigos
-        const hostileCreep = this.creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
-        if (hostileCreep) {
-            if (this.creep.attack(hostileCreep) === ERR_NOT_IN_RANGE) {
-                this.creep.moveTo(hostileCreep, { visualizePathStyle: { stroke: '#ff0000' } });
+        // Si no hay creeps enemigos, buscar estructuras hostiles
+        const hostileStructure = this.creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES);
+        if (hostileStructure) {
+            if (this.creep.rangedAttack(hostileStructure) === ERR_NOT_IN_RANGE) {
+                this.creep.moveTo(hostileStructure, { visualizePathStyle: { stroke: '#ff0000' } });
             }
             return;
         }
@@ -69,4 +69,4 @@ class RoleAttacker extends CreepRole {
     }
 }
 
-module.exports = RoleAttacker;
+module.exports = RoleRangedAttacker;
