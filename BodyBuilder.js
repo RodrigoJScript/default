@@ -26,30 +26,6 @@ class BodyBuilder {
             return bodyParts;
         }
 
-        if (role === 'upgrader') {
-            const minimumRequiredEnergy = bodyCosts['work'] + bodyCosts['carry'] + bodyCosts['move'];
-            if (remainingEnergy < minimumRequiredEnergy) {
-                return [];
-            }
-
-            remainingEnergy = this.addBodyParts(bodyParts, CARRY, 2, bodyCosts['carry'], remainingEnergy);
-            remainingEnergy = this.addBodyParts(bodyParts, MOVE, 2, bodyCosts['move'], remainingEnergy);
-
-            let workPartsCount = 0;
-            while (remainingEnergy >= bodyCosts['work'] && workPartsCount < 10) { // Límite de 10 partes WORK
-                bodyParts.push(WORK);
-                remainingEnergy -= bodyCosts['work'];
-                workPartsCount++;
-            }
-
-            if (remainingEnergy >= bodyCosts['move']) {
-                bodyParts.push(MOVE);
-                remainingEnergy -= bodyCosts['move'];
-            }
-
-            return bodyParts;
-        }
-
         if (role === 'scavenger') {
             const minimumRequiredEnergy = 4 * bodyCosts['move'] + 2 * bodyCosts['carry'];
             if (remainingEnergy < minimumRequiredEnergy) {
@@ -92,7 +68,7 @@ class BodyBuilder {
         remainingEnergy = this.addBodyParts(bodyParts, WORK, 1, bodyCosts['work'], remainingEnergy);
 
         let workPartsCount = 1;
-        while (remainingEnergy >= bodyCosts['work'] && workPartsCount < 6) {
+        while (remainingEnergy >= bodyCosts['work'] && workPartsCount < 5) {
             bodyParts.push(WORK);
             remainingEnergy -= bodyCosts['work'];
             workPartsCount++;

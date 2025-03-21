@@ -13,14 +13,14 @@ const ROLE_COURIER = 'courier';
 const ROLE_REPAIRER = 'repairer';
 
 const DESIRED_HARVESTERS = 2;
-const DESIRED_BUILDERS = 0;
+const DESIRED_BUILDERS = 1;
 const DESIRED_UPGRADERS = 1;
 const DESIRED_HAULERS = 0;
 const DESIRED_SCAVENGERS = 1;
 const DESIRED_WALL_FORTIFIERS = 0;
 const DESIRED_MANAGERS = 1;
 const DESIRED_SUPPLIERS = 1;
-const DESIRED_COURIERS = 1;
+const DESIRED_COURIERS = 0;
 const DESIRED_REPAIRERS = 0;
 
 class SpawnManager {
