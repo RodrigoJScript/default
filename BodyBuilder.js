@@ -16,7 +16,7 @@ class BodyBuilder {
             }
 
             const pairCost = bodyCosts['carry'] + bodyCosts['move'];
-            const numberOfPairs = Math.min(6, Math.floor(remainingEnergy / pairCost));
+            const numberOfPairs = Math.min(8, Math.floor(remainingEnergy / pairCost));
 
             for (let i = 0; i < numberOfPairs; i++) {
                 bodyParts.push(CARRY);
